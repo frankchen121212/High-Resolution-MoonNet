@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" serverName="kec110.site">
+    <serverData>
+      <paths name="kec110.site">
+        <serverdata>
+          <mappings>
+            <mapping deploy="High-Resolution-MoonNet" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
+</project>

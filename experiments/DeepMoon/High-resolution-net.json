@@ -1,0 +1,23 @@
+{
+  "dataset":        "deepmoon",
+  "model":          "high-resolution-net",
+  "output_dir":     "output",
+  "output_prefix":  "high-resolution-net",
+  "num_train": 30000,
+  "num_val": 5000,
+  "num_test": 5000,
+
+  "input_length":256,
+  "input_height":256,
+  "filter_length": 3,
+  "n_filters": 112,
+
+  "batch_size":8,
+  "lr":0.001,
+  "init": "he_normal",
+
+  "checkpoint": 0,
+  "debug_freq": 250,
+  "epochs": 10,
+  "gpu": "3,4"
+}
