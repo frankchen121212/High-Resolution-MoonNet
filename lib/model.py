@@ -110,7 +110,7 @@ def Unet(dim, learn_rate, lmbda, drop, FL, init, n_filters):
     return model
 
 
-def HRnet(dim, learn_rate):
+def HRnet(epochs, dim, learn_rate):
     print('Making HRnet model...')
     img_input = Input(batch_shape=(None, dim, dim, 1))
     x = stem_net(img_input)
@@ -140,9 +140,10 @@ def HRnet(dim, learn_rate):
     out = Reshape((dim, dim))(out)
 
     # compile
+    decay = learn_rate / epochs
+    adam = Adam(lr=learn_rate, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=decay)
     model = Model(inputs=img_input, outputs=out)
-    optimizer = Adam(lr=learn_rate)
-    model.compile(loss='binary_crossentropy', optimizer=optimizer)
+    model.compile(loss='binary_crossentropy', optimizer=adam)
     print(model.summary())
 
     return model

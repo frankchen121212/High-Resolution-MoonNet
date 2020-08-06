@@ -2,6 +2,7 @@
   "dataset":        "deepmoon",
   "model":          "u-net",
   "output_dir":     "output",
+  "log_dir":        "log",
   "output_prefix":  "u-net",
   "num_train": 30000,
   "num_val": 5000,
@@ -18,8 +19,8 @@
   "lambda": 1e-6,
   "init": "he_normal",
 
-  "checkpoint": "/share1/home/siyuan/High-Resolution-MoonNet/model/deepmoon/u-net/0801/u-net.h5",
+  "checkpoint": "/share1/home/siyuan/High-Resolution-MoonNet/model/deepmoon/u-net/u-net.h5",
   "debug_freq": 500,
   "epochs": 10,
-  "gpu": "6,7"
+  "gpu": "3,4"
 }

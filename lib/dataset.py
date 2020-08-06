@@ -16,19 +16,27 @@ def DeepMoon(args) :
     val_images = os.path.join(dataroot, "dev_images.hdf5")
     val_craters = os.path.join(dataroot, "dev_craters.hdf5")
 
+    test_images = os.path.join(dataroot, "test_images.hdf5")
+    test_craters = os.path.join(dataroot, "test_craters.hdf5")
+
     print("=>loading {}".format(train_images))
     train = h5py.File(train_images, 'r')
     print("=>loading {}".format(val_images))
     val = h5py.File(val_images, 'r')
+    print("=>loading {}".format(test_images))
+    test = h5py.File(test_images, 'r')
 
     Data = {
         'train': [train['input_images'][:n_train].astype('float32'),
                   train['target_masks'][:n_train].astype('float32')],
         'val': [val['input_images'][:n_val].astype('float32'),
-                val['target_masks'][:n_val].astype('float32')]
+                val['target_masks'][:n_val].astype('float32')],
+        'test': [test['input_images'][:n_test].astype('float32'),
+                test['target_masks'][:n_test].astype('float32')]
     }
     train.close()
     val.close()
+    test.close()
 
     # Rescale, normalize, add extra dim
     print("=>preprocessing data")
@@ -37,7 +45,8 @@ def DeepMoon(args) :
     # Load ground-truth craters
     Craters = {
         'train': pd.HDFStore(train_craters, 'r'),
-        'val': pd.HDFStore(val_craters, 'r')
+        'val': pd.HDFStore(val_craters, 'r'),
+        'test': pd.HDFStore(test_craters, 'r')
     }
     return  Data, Craters
 

@@ -1,7 +1,8 @@
 import os
+import numpy as np
 from lib.dataset import custom_image_generator
 from keras.callbacks import EarlyStopping
-from lib.evaluation import evaluation
+from lib.evaluation import evaluation,save_result
 from lib.function import *
 from lib.vis import debug_prediction
 
@@ -15,6 +16,7 @@ def train(args, Data, Craters, model):
     logger.info('==>Params')
     for key in args.keys():
         logger.info('\t{}:{}\n'.format(key, args[key]))
+    log = get_log(args)
 
     # Load checkpoint
     if args["checkpoint"]:
@@ -40,7 +42,8 @@ def train(args, Data, Craters, model):
                                                    batch_size=batch_size),
             validation_steps=n_samples,
             shuffle= True,
-            callbacks=[EarlyStopping(monitor='val_loss', patience=3, verbose=0)]
+            callbacks=[EarlyStopping(monitor='val_loss', patience=3, verbose=0),
+                       log]
         )
 
         # Debug prediction
@@ -52,7 +55,9 @@ def train(args, Data, Craters, model):
 
 
         # Evaluation
-        avg_rec, avg_pre, avg_f1 = evaluation(Data['val'], Craters['val'], args["input_length"], model)
+        recall, precision, fscore,_,_,_,_,_,_,_ = evaluation(Data['val'], Craters['val'], args["input_length"], model)
+        avg_rec, avg_pre, avg_f1 = np.mean(recall), np.mean(precision), np.mean(fscore)
+
         logger.info("=> epoch {}/{}\t" .format(epoch,args["epochs"])\
                     + "rec:{}\tprec:{}\tf1_score:{}\t".format(avg_rec,
                                                              avg_pre,
@@ -65,3 +70,30 @@ def train(args, Data, Craters, model):
             best_F1socre = avg_f1
             model_name = get_model_file_name(args)
             Save_Model(model, model_name, logger)
+
+
+def test(args, Data, Craters, model):
+    # logger
+    output_path = os.path.join(root, 'result', args["dataset"], args["model"])
+    logger = log_creater(output_dir=output_path, mode='test')
+    logger.info('==>Params')
+    for key in args.keys():
+        logger.info('\t{}:{}\n'.format(key, args[key]))
+
+    # Load checkpoint
+    if args["checkpoint"]:
+        init_weight_path = args["checkpoint"]
+        if not os.path.exists(init_weight_path):
+            raise Exception("Init Weight Path:{} Not Exists!".format(init_weight_path))
+        logger.info("loading weight from {}".format(init_weight_path))
+        model.load_weights(init_weight_path)
+
+    print("=> Evaluating Model.............")
+    recall, precision, fscore,\
+    frac_new, frac_new2, maxrad,\
+    err_lo, err_la, err_r,\
+    frac_duplicates = evaluation(Data['test'], Craters['test'], args["input_length"], model)
+
+    save_result(logger, recall, precision, fscore,
+                frac_new, frac_new2, maxrad,
+                err_lo, err_la, err_r, frac_duplicates)

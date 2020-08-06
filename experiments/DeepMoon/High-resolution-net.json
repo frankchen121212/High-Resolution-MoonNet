@@ -2,6 +2,7 @@
   "dataset":        "deepmoon",
   "model":          "high-resolution-net",
   "output_dir":     "output",
+  "log_dir":        "log",
   "output_prefix":  "high-resolution-net",
   "num_train": 30000,
   "num_val": 5000,
@@ -13,11 +14,11 @@
   "n_filters": 112,
 
   "batch_size":8,
-  "lr":0.001,
+  "lr":0.0001,
   "init": "he_normal",
 
-  "checkpoint": 0,
+  "checkpoint":"/share1/home/siyuan/High-Resolution-MoonNet/model/deepmoon/high-resolution-net/high-resolution-net.h5",
   "debug_freq": 250,
   "epochs": 10,
-  "gpu": "3,4"
+  "gpu": "1,2"
 }

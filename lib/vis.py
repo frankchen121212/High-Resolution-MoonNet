@@ -41,3 +41,7 @@ def debug_prediction(data, model, debug_freq, debug_path):
             plt.savefig(img_name)
             plt.close('all')
 
+
+def get_heatmap(data, model, debug_freq, heatmap_path):
+    pass
+

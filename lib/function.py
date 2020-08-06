@@ -1,5 +1,22 @@
 import time, os,logging
+from keras.callbacks import TensorBoard
 root = os.path.dirname(os.path.dirname(__file__))
+from datetime import datetime
+
+def get_log(args):
+    TIMESTAMP = "{0:%Y-%m-%dT%H-%M-%S/}".format(datetime.now())
+    log = TensorBoard(log_dir=os.path.join(args["log_dir"],
+                                           args["dataset"],
+                                           args["model"],
+                                           TIMESTAMP), # log dir
+                      histogram_freq=0,
+                      write_graph=True,
+                      write_grads=True,
+                      write_images=True,
+                      embeddings_freq=0,
+                      embeddings_layer_names=None,
+                      embeddings_metadata=None)
+    return log
 
 def log_creater(output_dir,mode = 'train'):
     if not os.path.exists(output_dir):

@@ -1,4 +1,5 @@
 import numpy as np
+from tqdm import tqdm
 from utils.template_match_target import template_match_t2c
 from utils.processing import get_id
 ########################
@@ -24,7 +25,7 @@ def evaluation(data, craters, dim, model, beta=1):
     csvs = []
     minrad, maxrad, cutrad, n_csvs = 3, 50, 0.8, len(X)
     diam = 'Diameter (pix)'
-    for i in range(n_csvs):
+    for i in tqdm(range(n_csvs)):
         csv = craters[get_id(i)]
         # remove small/large/half craters
         csv = csv[(csv[diam] < 2 * maxrad) & (csv[diam] > 2 * minrad)]
@@ -44,7 +45,7 @@ def evaluation(data, craters, dim, model, beta=1):
     err_lo, err_la, err_r = [], [], []
     frac_duplicates = []
     preds = model.predict(X)
-    for i in range(n_csvs):
+    for i in tqdm(range(n_csvs)):
         if len(csvs[i]) < 3:
             continue
         (N_match, N_csv, N_detect, maxr,
@@ -71,35 +72,39 @@ def evaluation(data, craters, dim, model, beta=1):
             # print("skipping iteration %d,N_csv=%d,N_detect=%d,N_match=%d" %
             #       (i, N_csv, N_detect, N_match))
 
-    return np.mean(recall), np.mean(precision), np.mean(fscore)
-    # print("binary XE score = %f" % model.evaluate(X, Y))
-    # if len(recall) > 3:
-    #     print("mean and std of N_match/N_csv (recall) = %f, %f" %
-    #           (np.mean(recall), np.std(recall)))
-    #     print("""mean and std of N_match/(N_match + (N_detect-N_match))
-    #           (precision) = %f, %f""" % (np.mean(precision), np.std(precision)))
-    #     print("mean and std of F_%d score = %f, %f" %
-    #           (beta, np.mean(fscore), np.std(fscore)))
-    #     print("""mean and std of (N_detect - N_match)/N_detect (fraction
-    #           of craters that are new) = %f, %f""" %
-    #           (np.mean(frac_new), np.std(frac_new)))
-    #     print("""mean and std of (N_detect - N_match)/N_csv (fraction of
-    #           "craters that are new, 2) = %f, %f""" %
-    #           (np.mean(frac_new2), np.std(frac_new2)))
-    #     print("median and IQR fractional longitude diff = %f, 25:%f, 75:%f" %
-    #           (np.median(err_lo), np.percentile(err_lo, 25),
-    #            np.percentile(err_lo, 75)))
-    #     print("median and IQR fractional latitude diff = %f, 25:%f, 75:%f" %
-    #           (np.median(err_la), np.percentile(err_la, 25),
-    #            np.percentile(err_la, 75)))
-    #     print("median and IQR fractional radius diff = %f, 25:%f, 75:%f" %
-    #           (np.median(err_r), np.percentile(err_r, 25),
-    #            np.percentile(err_r, 75)))
-    #     print("mean and std of frac_duplicates: %f, %f" %
-    #           (np.mean(frac_duplicates), np.std(frac_duplicates)))
-    #     print("""mean and std of maximum detected pixel radius in an image =
-    #           %f, %f""" % (np.mean(maxrad), np.std(maxrad)))
-    #     print("""absolute maximum detected pixel radius over all images =
-    #           %f""" % np.max(maxrad))
-    #     print("")
+    return recall, precision, fscore,frac_new, frac_new2, maxrad, err_lo, err_la, err_r,frac_duplicates
+
+def save_result(logger, recall, precision, fscore,
+                  frac_new, frac_new2, maxrad,
+                  err_lo, err_la, err_r,frac_duplicates):
+    beta = 1
+
+    logger.info("mean and std of N_match/N_csv (recall) = %f, %f" %
+          (np.mean(recall), np.std(recall)))
+    logger.info("""mean and std of N_match/(N_match + (N_detect-N_match))
+          (precision) = %f, %f""" % (np.mean(precision), np.std(precision)))
+    logger.info("mean and std of F_%d score = %f, %f" %
+          (beta, np.mean(fscore), np.std(fscore)))
+    logger.info("""mean and std of (N_detect - N_match)/N_detect (fraction
+          of craters that are new) = %f, %f""" %
+          (np.mean(frac_new), np.std(frac_new)))
+    logger.info("""mean and std of (N_detect - N_match)/N_csv (fraction of
+          "craters that are new, 2) = %f, %f""" %
+          (np.mean(frac_new2), np.std(frac_new2)))
+    logger.info("median and IQR fractional longitude diff = %f, 25:%f, 75:%f" %
+          (np.median(err_lo), np.percentile(err_lo, 25),
+           np.percentile(err_lo, 75)))
+    logger.info("median and IQR fractional latitude diff = %f, 25:%f, 75:%f" %
+          (np.median(err_la), np.percentile(err_la, 25),
+           np.percentile(err_la, 75)))
+    logger.info("median and IQR fractional radius diff = %f, 25:%f, 75:%f" %
+          (np.median(err_r), np.percentile(err_r, 25),
+           np.percentile(err_r, 75)))
+    logger.info("mean and std of frac_duplicates: %f, %f" %
+          (np.mean(frac_duplicates), np.std(frac_duplicates)))
+    logger.info("""mean and std of maximum detected pixel radius in an image =
+          %f, %f""" % (np.mean(maxrad), np.std(maxrad)))
+    logger.info("""absolute maximum detected pixel radius over all images =
+          %f""" % np.max(maxrad))
+
 
