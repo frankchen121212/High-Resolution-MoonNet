@@ -2,7 +2,7 @@ High-Resolution-MoonNet
 ===
 
 ## Introduction
-This is a recurrent keras implementation of [Lunar Features Detection for Energy Discovery via Deep Learning]().
+This is a Keras implementation of [Lunar Features Detection for Energy Discovery via Deep Learning]().
 
 The main network structure is listed as below:
 ### Model
