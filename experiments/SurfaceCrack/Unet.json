@@ -1,27 +1,27 @@
 {
-  "dataset":        "deepmoon",
+  "dataset":        "surfacecrack",
   "model":          "u-net",
   "output_dir":     "output",
   "log_dir":        "log",
   "output_prefix":  "u-net",
-  "num_train": 30000,
-  "num_val": 5000,
-  "num_test": 5000,
+  "num_train": 140,
+  "num_val": 20,
+  "num_test": 20,
 
   "input_length":256,
   "input_height":256,
   "filter_length": 3,
   "n_filters": 112,
 
-  "batch_size":8,
+  "batch_size":4,
   "lr":0.0001,
   "dp_rate":0.15,
   "lambda": 1e-6,
   "init": "he_normal",
 
-  "checkpoint": 0,
-  "debug_freq": 500,
+  "checkpoint":0,
+  "debug_freq":4,
   "trails": 4,
   "epochs": 10,
-  "gpu": "6"
+  "gpu": "4"
 }

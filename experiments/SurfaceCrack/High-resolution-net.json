@@ -1,25 +1,25 @@
 {
-  "dataset":        "deepmoon",
+  "dataset":        "surfacecrack",
   "model":          "high-resolution-net",
   "output_dir":     "output",
   "log_dir":        "log",
   "output_prefix":  "high-resolution-net",
-  "num_train": 30000,
-  "num_val": 5000,
-  "num_test": 5000,
+  "num_train": 140,
+  "num_val": 20,
+  "num_test": 20,
 
   "input_length":256,
   "input_height":256,
   "filter_length": 3,
-  "W": 32,
+  "n_filters": 112,
 
-  "batch_size":8,
-  "lr":0.0001,
+  "batch_size":2,
+  "lr":0.00001,
   "init": "he_normal",
 
   "checkpoint":0,
-  "debug_freq": 250,
+  "debug_freq": 1,
   "trails": 4,
   "epochs": 10,
-  "gpu": "5"
+  "gpu": "3"
 }

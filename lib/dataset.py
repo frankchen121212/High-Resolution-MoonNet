@@ -50,7 +50,89 @@ def DeepMoon(args) :
     }
     return  Data, Craters
 
+def Surface_Crack(args):
+    # Load data
+    n_train, n_val, n_test = args['num_train'], args['num_val'], args['num_test']
+    dataroot = os.path.join(root, 'data', args["dataset"])
+    data_path = os.path.join(dataroot, "surface_crack.hdf5")
+    print("=>loading {}".format(data_path))
+    dataset = h5py.File(data_path, 'r')
 
+    # train, val = split_train_val(dataset, ratio=0.15)
+    train = dataset
+    val = dataset
+
+    Data = {
+        'train': [train['input_images'][:n_train].astype('float32'),
+                  train['target_masks'][:n_train].astype('float32')],
+        'val': [val['input_images'][:n_val].astype('float32'),
+                val['target_masks'][:n_val].astype('float32')],
+
+    }
+    dataset.close()
+
+    # Rescale, normalize, add extra dim
+    # print("=>preprocessing data")
+    preprocess(Data)
+
+    return Data
+
+
+def Assembled(args):
+    n_train, n_val, n_test = args['num_train'], args['num_val'], args['num_test']
+    dataroot = os.path.join(root, 'data', "assembled_dataset")
+    train_path = os.path.join(dataroot, "assembled_train.hdf5")
+    val_path = os.path.join(dataroot, "assembled_val.hdf5")
+    print("=>loading {}".format(train_path))
+    train = h5py.File(train_path, 'r')
+    print("=>loading {}".format(val_path))
+    val = h5py.File(val_path, 'r')
+
+    Data = None
+    if "crack" in args["dataset"]:
+        Data = {
+            'train': [train['input_images'][:n_train].astype('float32'),
+                      train['crack_mask'][:n_train].astype('float32')],
+            'val': [val['input_images'][:n_val].astype('float32'),
+                    val['crack_mask'][:n_val].astype('float32')],
+
+        }
+    elif "crater" in args["dataset"]:
+        Data = {
+            'train': [train['input_images'][:n_train].astype('float32'),
+                      train['crater_mask'][:n_train].astype('float32')],
+            'val': [val['input_images'][:n_val].astype('float32'),
+                    val['crater_mask'][:n_val].astype('float32')],
+        }
+
+    train.close()
+    val.close()
+
+    preprocess(Data)
+    return Data
+
+def round_down(x):
+    x = int(x)
+    return round(x, 1 - len(str(x)))
+
+def split_train_val(dataset, ratio = 0.15):
+    train, val = {},{}
+
+    v_images, v_labels = [], []
+    t_images, t_labels = list(dataset["input_images"]), list(dataset["target_masks"])
+    validation_size = round_down(ratio * len(dataset["input_images"]))
+
+    while (len(v_images) < validation_size):
+        index = int(np.random.randint(len(t_images), size=1))
+        v_images.append(t_images.pop(index))
+        v_labels.append(t_labels.pop(index))
+
+    train["input_images"] = np.array(t_images)
+    train["target_masks"] = np.array(t_labels)
+    val["input_images"] = np.array(v_images)
+    val["target_masks"] = np.array(v_labels)
+
+    return train, val
 ########################
 def custom_image_generator(data, target, batch_size=32):
     """Custom image generator that manipulates image/target pairs to prevent

@@ -1,0 +1,25 @@
+{
+  "dataset":        "assembled_crater",
+  "model":          "high-resolution-net",
+  "output_dir":     "output",
+  "log_dir":        "log",
+  "output_prefix":  "crater-high-resolution-net",
+  "num_train": 35,
+  "num_val": 9,
+  "num_test": 9,
+
+  "input_length":256,
+  "input_height":256,
+  "filter_length": 3,
+  "n_filters": 112,
+
+  "batch_size":1,
+  "lr":0.00001,
+  "init": "he_normal",
+
+  "checkpoint": 0,
+  "debug_freq": 0,
+  "trails": 4,
+  "epochs": 10,
+  "gpu": "1"
+}

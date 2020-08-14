@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 import os
 import numpy as np
 from utils.template_match_target import template_match_t
-from PIL import Image
 
 def debug_prediction(data, model, debug_freq, debug_path):
     # IMG.shape :(val_num, 256, 256, 1)
@@ -41,7 +40,4 @@ def debug_prediction(data, model, debug_freq, debug_path):
             plt.savefig(img_name)
             plt.close('all')
 
-
-def get_heatmap(data, model, debug_freq, heatmap_path):
-    pass
 

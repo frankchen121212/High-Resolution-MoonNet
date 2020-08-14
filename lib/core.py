@@ -27,6 +27,7 @@ def train(args, Data, Craters, model):
         model.load_weights(init_weight_path)
 
     best_F1socre = 0
+    min_loss = 9999
     for epoch in range(args["epochs"]):
         n_samples = args["num_train"]
         batch_size = args["batch_size"]
@@ -35,8 +36,9 @@ def train(args, Data, Craters, model):
         model.fit_generator(
             custom_image_generator(Data['train'][0], Data['train'][1],
                                    batch_size=batch_size),
-            steps_per_epoch= n_samples / batch_size, epochs=1, verbose=1,
-            # validation_data=(Data['dev'][0],Data['dev'][1]), #no gen
+            steps_per_epoch= n_samples / batch_size,
+            epochs=args["epochs"],
+            verbose=1,
             validation_data=custom_image_generator(Data['val'][0],
                                                    Data['val'][1],
                                                    batch_size=batch_size),
@@ -48,34 +50,51 @@ def train(args, Data, Craters, model):
 
         # Debug prediction
         if args["debug_freq"] :
+            debug_prediction(Data['train'],
+                             model,
+                             args["debug_freq"],
+                             debug_path = os.path.join(output_path,'epoch_train_{}'.format(epoch)))
             debug_prediction(Data['val'],
                              model,
                              args["debug_freq"],
-                             debug_path = os.path.join(output_path,'epoch_{}'.format(epoch)))
-
+                             debug_path=os.path.join(output_path, 'epoch_val_{}'.format(epoch)))
 
         # Evaluation
-        recall, precision, fscore,_,_,_,_,_,_,_ = evaluation(Data['val'], Craters['val'], args["input_length"], model)
-        avg_rec, avg_pre, avg_f1 = np.mean(recall), np.mean(precision), np.mean(fscore)
 
-        logger.info("=> epoch {}/{}\t" .format(epoch,args["epochs"])\
-                    + "rec:{}\tprec:{}\tf1_score:{}\t".format(avg_rec,
-                                                             avg_pre,
-                                                             avg_f1
-                                                             )
-                    )
 
         # saving checkpoint
-        if avg_f1 > best_F1socre:
-            best_F1socre = avg_f1
-            model_name = get_model_file_name(args)
-            Save_Model(model, model_name, logger)
+        if args["dataset"] == "deepmoon":
+            recall, precision, fscore, _, _, _, _, _, _, _ = evaluation(Data['val'], Craters['val'],
+                                                                        args["input_length"], model)
+            avg_rec, avg_pre, avg_f1 = np.mean(recall), np.mean(precision), np.mean(fscore)
+
+            logger.info("=> epoch {}/{}\t".format(epoch, args["epochs"]) \
+                        + "rec:{}\tprec:{}\tf1_score:{}\t".format(avg_rec,
+                                                                  avg_pre,
+                                                                  avg_f1
+                                                                  )
+                        )
+            # Save checkpoint
+            if avg_f1 > best_F1socre:
+                best_F1socre = avg_f1
+                model_name = get_model_file_name(args)
+                Save_Model(model, model_name, logger)
+        elif args["dataset"] == "surfacecrack" or "assembled" in args["dataset"]:
+            loss = model.evaluate(Data['val'][0], Data['val'][1])
+            logger.info("=> epoch {}/{}\t".format(epoch, args["epochs"]) \
+                        + "loss:{}\t".format(loss)
+                        )
+            # Save checkpoint
+            if loss < min_loss:
+                min_loss = loss
+                model_name = get_model_file_name(args)
+                Save_Model(model, model_name, logger)
 
 
 def test(args, Data, Craters, model):
     # logger
     output_path = os.path.join(root, 'result', args["dataset"], args["model"])
-    logger = log_creater(output_dir=output_path, mode='test')
+    logger = log_creater(output_dir=output_path, mode='val')
     logger.info('==>Params')
     for key in args.keys():
         logger.info('\t{}:{}\n'.format(key, args[key]))
@@ -92,7 +111,7 @@ def test(args, Data, Craters, model):
     recall, precision, fscore,\
     frac_new, frac_new2, maxrad,\
     err_lo, err_la, err_r,\
-    frac_duplicates = evaluation(Data['test'], Craters['test'], args["input_length"], model)
+    frac_duplicates = evaluation(Data['val'], Craters['val'], args["input_length"], model)
 
     save_result(logger, recall, precision, fscore,
                 frac_new, frac_new2, maxrad,
