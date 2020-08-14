@@ -7,14 +7,14 @@ This is a recurrent keras implementation of [Lunar Features Detection for Energy
 The main network structure is listed as below:
 ### Model
 <div align="center">
-	<img src="example/Framework.jpg", width="800">
+<img src="example/Framework.jpg", width="800">
 </div>
 
 
 ### Results
 
 <div align="center">
-    <img src="example/result.jpg", width="800">
+<img src="example/result.jpg", width="800">
 </div>
 
 ### Data Preparation
