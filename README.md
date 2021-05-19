@@ -2,7 +2,7 @@ High-Resolution-MoonNet
 ===
 
 ## Introduction
-This is a Keras implementation of [Lunar Features Detection for Energy Discovery via Deep Learning]().
+This is a Keras implementation of [Lunar Features Detection for Energy Discovery via Deep Learning](https://doi.org/10.1016/j.apenergy.2021.117085).
 
 The main network structure is listed as below:
 ### Model
@@ -18,9 +18,14 @@ The main network structure is listed as below:
 </div>
 
 ### Data Preparation
+
+For MoonDEM dataset, please download via the folowing link:
+
 ```
 python data/deepmoon/get_hdf5_data.py
 ```
+
+For Crack500 and our proposed Assembled dataset, you can download via [Google Drive(https://drive.google.com/drive/folders/1PHobsjrkWV6-qDjjNKKuPa85zxK4UNvW?usp=sharing)
 
 ## Environment
 The code is developed using python 3.6 on Ubuntu 16.04. NVIDIA GPUs are needed. The code is developed and tested using 4 NVIDIA P100 GPU cards. Other platforms or GPU cards are not fully tested.
