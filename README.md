@@ -46,6 +46,19 @@ python train.py experiment/Assembled/Crater-High-resolution-net.json
 ```
 
 
+## Citation
 
+If you use our code or models in your research, please cite with:
+
+```
+@article{Chen_2021,	doi = {10.1016/j.apenergy.2021.117085},	
+url = {https://doi.org/10.1016%2Fj.apenergy.2021.117085},	
+year = 2021,	
+month = {aug},	
+publisher = {Elsevier {BV}},	volume = {296},	pages = {117085},	
+author = {Siyuan Chen and Yu Li and Tao Zhang and Xingyu Zhu and Shuyu Sun and Xin Gao},
+title = {Lunar features detection for energy discovery via deep learning},
+journal = {Applied Energy}} 
+```
 
 
