@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="e7973932-4a5f-471d-b7d4-d1f8183cc1dc" name="deepl.cbrc.kaust.edu.sa">
+        <fileTransfer rootFolder="/data/chens0a" accessType="SFTP" host="10.254.147.206" port="22" sshConfigId="02ff14d3-5204-49bf-ba57-773a31445931" sshConfig="deepl.cbrc.kaust.edu.sa">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

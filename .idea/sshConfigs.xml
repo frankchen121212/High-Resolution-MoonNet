@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SshConfigs">
+    <configs>
+      <sshConfig authType="PASSWORD" host="10.254.147.206" id="02ff14d3-5204-49bf-ba57-773a31445931" port="22" customName="deepl.cbrc.kaust.edu.sa" nameFormat="CUSTOM" username="chens0a" />
+    </configs>
+  </component>
+</project>
